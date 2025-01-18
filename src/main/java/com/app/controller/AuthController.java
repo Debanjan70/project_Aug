@@ -1,6 +1,7 @@
 package com.app.controller;
 
 import com.app.entity.User;
+import com.app.payload.LoginDto;
 import com.app.payload.UserDto;
 import com.app.service.AuthService;
 import org.springframework.http.HttpStatus;
@@ -23,5 +24,16 @@ public class AuthController {
     ){
         UserDto userDto = authService.createUser(user);
         return new ResponseEntity<>(userDto, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUser(
+            @RequestBody LoginDto loginDto
+            ){
+        boolean status = authService.verifyLogin(loginDto);
+        if(status){
+            return new ResponseEntity<>("Login Successful", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Invalid username/Password", HttpStatus.UNAUTHORIZED);
     }
 }

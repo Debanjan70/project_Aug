@@ -1,6 +1,7 @@
 package com.app.controller;
 
 import com.app.entity.User;
+import com.app.payload.JWTTokenDto;
 import com.app.payload.LoginDto;
 import com.app.payload.UserDto;
 import com.app.service.AuthService;
@@ -27,13 +28,16 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(
+    public ResponseEntity<?> loginUser(
             @RequestBody LoginDto loginDto
             ){
-        boolean status = authService.verifyLogin(loginDto);
-        if(status){
-            return new ResponseEntity<>("Login Successful", HttpStatus.OK);
+        String jwtToken = authService.verifyLogin(loginDto);
+        if(jwtToken != null){
+            JWTTokenDto tokenDto = new JWTTokenDto();
+            tokenDto.setToken(jwtToken);
+            tokenDto.setTokenType("JWT");
+            return new ResponseEntity<>(tokenDto, HttpStatus.OK);
         }
-        return new ResponseEntity<>("Invalid username/Password", HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>("Invalid Token", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

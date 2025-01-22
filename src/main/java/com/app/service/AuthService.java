@@ -8,6 +8,7 @@ import com.app.payload.UserDto;
 import com.app.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +19,13 @@ public class AuthService {
 
     private UserRepository userRepository;
     private ModelMapper modelMapper;
-//    private PasswordEncoder passwordEncoder;
-    public AuthService(UserRepository userRepository, ModelMapper modelMapper) {
+    private JWTService jwtService;
+
+    public AuthService(UserRepository userRepository, ModelMapper modelMapper, JWTService jwtService) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
-//        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+
     }
 
     public UserDto createUser(User user){
@@ -39,7 +42,8 @@ public class AuthService {
 //        String encodePassword = passwordEncoder.encode(user.getPassword());
 //        user.setPassword(encodePassword);
 
-        //Here we are doing password encription is a 2nd Way to encrpt
+        //Here we are doing password encription is a 2nd Way to encrpt:-
+
         String hashpw = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(10));
         user.setPassword(hashpw);
 
@@ -48,13 +52,15 @@ public class AuthService {
         return userDto;
     }
 
-    public boolean verifyLogin(LoginDto loginDto) {
+    public String verifyLogin(LoginDto loginDto) {
         Optional<User> opUser = userRepository.findByUsername(loginDto.getUsername());
         if(opUser.isPresent()){
             User user = opUser.get();
-            return BCrypt.checkpw(loginDto.getPassword(),user.getPassword());
+            if(BCrypt.checkpw(loginDto.getPassword(),user.getPassword())){
+              return   jwtService.generateToken(user.getUsername());
+            }
         }
-        return false;
+        return null;
     }
 
     UserDto ConvertEntityToDto(User user){

@@ -40,4 +40,8 @@ public class AuthController {
         }
         return new ResponseEntity<>("Invalid Token", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    @PostMapping("/message")
+    public String getMessage(){
+        return  "hello";
+    }
 }

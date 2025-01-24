@@ -43,7 +43,6 @@ public class AuthService {
 //        user.setPassword(encodePassword);
 
         //Here we are doing password encription is a 2nd Way to encrpt:-
-
         String hashpw = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(10));
         user.setPassword(hashpw);
 

@@ -13,17 +13,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/auth")     //http://localhost:8080/api/v1/auth/
 public class AuthController {
     private AuthService authService;
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
-    @PostMapping("/signup")
+    @PostMapping("/user-signup")
     public ResponseEntity<UserDto> createUser(
             @RequestBody User user
     ){
         UserDto userDto = authService.createUser(user);
+        return new ResponseEntity<>(userDto, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/content-manager-signup")
+    public ResponseEntity<UserDto> createContentManagerAccount(
+            @RequestBody User user
+    ){
+        UserDto userDto = authService.createContentManagerAccount(user);
+        return new ResponseEntity<>(userDto, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/blog-manager-signup")
+    public ResponseEntity<UserDto> createBlogManagerAccount(
+            @RequestBody User user
+    ){
+        UserDto userDto = authService.createBlogManagerAccount(user);
         return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
 

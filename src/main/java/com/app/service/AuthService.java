@@ -45,11 +45,54 @@ public class AuthService {
         //Here we are doing password encription is a 2nd Way to encrpt:-
         String hashpw = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(10));
         user.setPassword(hashpw);
+        user.setRole("ROLE_USER");
 
         User save = userRepository.save(user);
         UserDto userDto = ConvertEntityToDto(save);
         return userDto;
     }
+
+    public UserDto createContentManagerAccount(User user){
+        Optional<User> opUsername = userRepository.findByUsername(user.getUsername());
+        if(opUsername.isPresent()){
+            throw new UsernameAlreadyExistsException("Username already exists");
+        }
+        Optional<User> opEmail = userRepository.findByEmailId(user.getEmailId());
+        if(opEmail.isPresent()){
+            throw new EmailAlreadyExistsException("Email already exists");
+        }
+
+        //Here we are doing password encription is a 2nd Way to encrpt:-
+        String hashpw = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(10));
+        user.setPassword(hashpw);
+        user.setRole("ROLE_CONTENTMANAGER");
+
+        User save = userRepository.save(user);
+        UserDto userDto = ConvertEntityToDto(save);
+        return userDto;
+    }
+
+    public UserDto createBlogManagerAccount(User user){
+        Optional<User> opUsername = userRepository.findByUsername(user.getUsername());
+        if(opUsername.isPresent()){
+            throw new UsernameAlreadyExistsException("Username already exists");
+        }
+        Optional<User> opEmail = userRepository.findByEmailId(user.getEmailId());
+        if(opEmail.isPresent()){
+            throw new EmailAlreadyExistsException("Email already exists");
+        }
+
+        //Here we are doing password encription is a 2nd Way to encrpt:-
+        String hashpw = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(10));
+        user.setPassword(hashpw);
+        user.setRole("ROLE_BLOGMANAGER");
+
+        User save = userRepository.save(user);
+        UserDto userDto = ConvertEntityToDto(save);
+        return userDto;
+    }
+
+
 
     public String verifyLogin(LoginDto loginDto) {
         Optional<User> opUser = userRepository.findByUsername(loginDto.getUsername());

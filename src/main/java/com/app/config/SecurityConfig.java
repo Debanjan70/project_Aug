@@ -22,12 +22,18 @@ public class SecurityConfig {
         //h(cd)2
         http.csrf().disable().cors().disable();
 
-
         //haap
-        http.authorizeHttpRequests().anyRequest().permitAll();
+//        http.authorizeHttpRequests().anyRequest().permitAll();
         http.addFilterBefore(jwtFilter , AuthorizationFilter.class);
+        http.authorizeHttpRequests()
+                .requestMatchers("/api/v1/auth/user-signup","/api/v1/auth/login","/api/v1/auth/content-manager-signup","/api/v1/auth/blog-manager-signup")
+                .permitAll()
+                .requestMatchers("/api/v1/cars/add-car").hasRole("CONTENTMANAGER")
+                .anyRequest().authenticated();
+
         return http.build();
     }
+
 //    @Bean
 //    public PasswordEncoder getPasswordEncoder() {
 //        return new BCryptPasswordEncoder();

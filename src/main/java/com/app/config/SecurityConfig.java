@@ -26,7 +26,7 @@ public class SecurityConfig {
 //        http.authorizeHttpRequests().anyRequest().permitAll();
         http.addFilterBefore(jwtFilter , AuthorizationFilter.class);
         http.authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/user-signup","/api/v1/auth/login","/api/v1/auth/content-manager-signup","/api/v1/auth/blog-manager-signup")
+                .requestMatchers("/api/v1/auth/user-signup","/api/v1/auth/login","/api/v1/auth/content-manager-signup","/api/v1/auth/blog-manager-signup","/api/v1/auth/login-otp","/api/v1/auth/validate-otp")
                 .permitAll()
                 .requestMatchers("/api/v1/cars/add-car").hasRole("CONTENTMANAGER")
                 .anyRequest().authenticated();

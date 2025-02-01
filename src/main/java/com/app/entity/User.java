@@ -29,6 +29,17 @@ public class User {
   @Column(name = "role", nullable = false, length = 25)
   private String role;
 
+    @Column(name = "mobile", nullable = false, length = 10)
+    private String mobile;
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
     public long getId() {
         return id;
     }

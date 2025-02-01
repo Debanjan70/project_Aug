@@ -91,6 +91,15 @@ public class AuthService {
         UserDto userDto = ConvertEntityToDto(save);
         return userDto;
     }
+    public String genarateToken(String mobile){
+        Optional<User> opUser = userRepository.findByMobile(mobile);
+        if(opUser.isPresent()){
+            User user = opUser.get();
+            return jwtService.generateToken(user.getUsername());
+        }
+        return  "invalid mobile";
+
+    }
 
 
 

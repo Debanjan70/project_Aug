@@ -5,19 +5,19 @@ import com.app.payload.JWTTokenDto;
 import com.app.payload.LoginDto;
 import com.app.payload.UserDto;
 import com.app.service.AuthService;
+import com.app.service.OtpService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")     //http://localhost:8080/api/v1/auth/
 public class AuthController {
     private AuthService authService;
-    public AuthController(AuthService authService) {
+    private OtpService otpService;
+    public AuthController(AuthService authService , OtpService otpService) {
         this.authService = authService;
+        this.otpService =  otpService;
     }
     @PostMapping("/user-signup")
     public ResponseEntity<UserDto> createUser(
@@ -56,8 +56,31 @@ public class AuthController {
         }
         return new ResponseEntity<>("Invalid Token", HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    @PostMapping("/message")
-    public String getMessage(){
-        return  "hello";
+    @PostMapping("/login-otp")
+    public ResponseEntity<?> genrateOtp(
+            @RequestParam String mobile
+    ){
+        String otp = otpService.genarateOtp(mobile);
+        return new ResponseEntity<>(mobile + " Otp is: " + otp, HttpStatus.OK);
     }
+    @PostMapping("/validate-otp")
+    public ResponseEntity<?> verifyOtp(
+            @RequestParam String mobile ,
+            @RequestParam String otp
+            ){
+        boolean status = otpService.validateOtp(mobile, otp);
+
+        if(status){
+            //genarate jwt token
+            String jwtToken = authService.genarateToken(mobile);
+            if(jwtToken != null){
+                JWTTokenDto tokenDto = new JWTTokenDto();
+                tokenDto.setToken(jwtToken);
+                tokenDto.setTokenType("JWT");
+                return new ResponseEntity<>(tokenDto, HttpStatus.OK);
+            }
+        }
+        return  new ResponseEntity<>("Invalid Oto" , HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

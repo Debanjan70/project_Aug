@@ -91,7 +91,7 @@ public class AuthService {
         UserDto userDto = ConvertEntityToDto(save);
         return userDto;
     }
-    public String genarateToken(String mobile){
+    public String validateOtpGenarateToken(String mobile){
         Optional<User> opUser = userRepository.findByMobile(mobile);
         if(opUser.isPresent()){
             User user = opUser.get();
@@ -100,8 +100,6 @@ public class AuthService {
         return  "invalid mobile";
 
     }
-
-
 
     public String verifyLogin(LoginDto loginDto) {
         Optional<User> opUser = userRepository.findByUsername(loginDto.getUsername());

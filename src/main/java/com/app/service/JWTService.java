@@ -23,8 +23,6 @@ public class JWTService {
 
     private Algorithm algorithm;
 
-//    private String USER_NAME = "username";
-
     @PostConstruct
     public void postConstruct(){
          algorithm = Algorithm.HMAC256(algorithmKey);

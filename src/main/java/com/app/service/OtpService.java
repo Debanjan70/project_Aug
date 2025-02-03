@@ -26,7 +26,6 @@ public class OtpService {
         Optional<User> opUser = userRepository.findByMobile(mobileNumber);
         if(opUser.isPresent()) {
 
-
             String otp = String.format("%06d", new Random().nextInt(999999));
 
             OtpDetails otpDetails = new OtpDetails(otp, System.currentTimeMillis());

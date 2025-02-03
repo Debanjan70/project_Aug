@@ -56,6 +56,8 @@ public class AuthController {
         }
         return new ResponseEntity<>("Invalid Token", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
     @PostMapping("/login-otp")
     public ResponseEntity<?> genrateOtp(
             @RequestParam String mobile
@@ -63,6 +65,8 @@ public class AuthController {
         String otp = otpService.genarateOtp(mobile);
         return new ResponseEntity<>(mobile + " Otp is: " + otp, HttpStatus.OK);
     }
+
+
     @PostMapping("/validate-otp")
     public ResponseEntity<?> verifyOtp(
             @RequestParam String mobile ,
@@ -72,7 +76,7 @@ public class AuthController {
 
         if(status){
             //genarate jwt token
-            String jwtToken = authService.genarateToken(mobile);
+            String jwtToken = authService.validateOtpGenarateToken(mobile);
             if(jwtToken != null){
                 JWTTokenDto tokenDto = new JWTTokenDto();
                 tokenDto.setToken(jwtToken);
@@ -80,7 +84,7 @@ public class AuthController {
                 return new ResponseEntity<>(tokenDto, HttpStatus.OK);
             }
         }
-        return  new ResponseEntity<>("Invalid Oto" , HttpStatus.INTERNAL_SERVER_ERROR);
+        return  new ResponseEntity<>("Invalid Otp" , HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
